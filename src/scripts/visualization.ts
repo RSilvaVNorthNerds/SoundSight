@@ -2,7 +2,13 @@ import * as THREE from "three";
 import vertexShader from "../shaders/vertex.glsl?raw";
 import fragmentShader from "../shaders/fragment.glsl?raw";
 
-function useAudioVisualizer() {
+interface IUseAudioVisualizer {
+  color: number;
+  shape: string;
+  wireframe: boolean;
+}
+
+function useAudioVisualizer({ color, shape, wireframe }: IUseAudioVisualizer) {
   // Create a scene
   const scene = new THREE.Scene();
   scene.background = new THREE.Color(0x242424);
@@ -29,13 +35,6 @@ function useAudioVisualizer() {
   const audioLoader = new THREE.AudioLoader();
   audioLoader.load("phonk.mp3", function (buffer) {
     sound.setBuffer(buffer);
-    window.addEventListener("click", function () {
-      if (!sound.isPlaying) {
-        sound.play();
-      } else {
-        sound.pause();
-      }
-    });
   });
 
   const analyser = new THREE.AudioAnalyser(sound, 32);
@@ -43,12 +42,12 @@ function useAudioVisualizer() {
   const clock = new THREE.Clock();
 
   // Create a geometry
-  const geometry = new THREE.IcosahedronGeometry(3, 25);
+  const geometry = getShape(shape);
 
   const uniforms = {
     u_time: { value: 0.8 },
     u_frequency: { value: 0.003 },
-    u_color: { value: new THREE.Color(0x00008b) },
+    u_color: { value: new THREE.Color(color) },
   };
 
   // Create a material
@@ -61,7 +60,7 @@ function useAudioVisualizer() {
   // Create a mesh
   const sphereMesh = new THREE.Mesh(geometry, material);
 
-  sphereMesh.material.wireframe = true;
+  sphereMesh.material.wireframe = wireframe;
   // Add the mesh to the scene
   scene.add(sphereMesh);
 
@@ -85,7 +84,17 @@ function useAudioVisualizer() {
   return {
     animate,
     renderer,
+    sound,
   };
+}
+
+function getShape(name: string) {
+  switch (name) {
+    case "Icosahedron":
+      return new THREE.IcosahedronGeometry(3, 25);
+    case "Sphere":
+      return new THREE.SphereGeometry(3, 25);
+  }
 }
 
 export default useAudioVisualizer;
