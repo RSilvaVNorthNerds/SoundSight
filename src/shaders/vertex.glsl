@@ -95,7 +95,6 @@ float pnoise(vec3 P, vec3 rep) {
 uniform float u_frequency;
 
 void main() {
-
     float noise = 25.25 * pnoise(position + u_time, vec3(10.0));
 
     float displacement = (u_frequency / 300.) * (noise / 10.);

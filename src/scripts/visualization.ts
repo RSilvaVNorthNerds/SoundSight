@@ -5,6 +5,7 @@ import fragmentShader from "../shaders/fragment.glsl?raw";
 function useAudioVisualizer() {
   // Create a scene
   const scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x242424);
 
   const VISUALIZER_WIDTH = 800;
   const VISUALIZER_HEIGHT = 600;
@@ -29,7 +30,11 @@ function useAudioVisualizer() {
   audioLoader.load("phonk.mp3", function (buffer) {
     sound.setBuffer(buffer);
     window.addEventListener("click", function () {
-      sound.play();
+      if (!sound.isPlaying) {
+        sound.play();
+      } else {
+        sound.pause();
+      }
     });
   });
 
@@ -64,14 +69,22 @@ function useAudioVisualizer() {
   const renderer = new THREE.WebGLRenderer();
   renderer.setSize(VISUALIZER_WIDTH, VISUALIZER_HEIGHT);
 
+  // Animation loop
+  const animate = () => {
+    camera.lookAt(scene.position);
+    uniforms.u_time.value = clock.getElapsedTime();
+    uniforms.u_frequency.value = analyser.getAverageFrequency();
+
+    sphereMesh.rotation.x += 0.001;
+    sphereMesh.rotation.y += 0.001;
+
+    requestAnimationFrame(animate);
+    renderer.render(scene, camera);
+  };
+
   return {
+    animate,
     renderer,
-    scene,
-    camera,
-    uniforms,
-    analyser,
-    clock,
-    sphereMesh,
   };
 }
 

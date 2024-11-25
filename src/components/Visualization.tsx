@@ -3,8 +3,7 @@ import useAudioVisualizer from "../scripts/visualization";
 
 function Visualization() {
   const mountRef = useRef<HTMLDivElement>(null);
-  const { scene, camera, renderer, uniforms, analyser, clock, sphereMesh } =
-    useAudioVisualizer();
+  const { animate, renderer } = useAudioVisualizer();
 
   useEffect(() => {
     // Append the renderer's DOM element to the mountRef
@@ -12,18 +11,6 @@ function Visualization() {
       mountRef.current.appendChild(renderer.domElement);
     }
 
-    // Animation loop
-    const animate = () => {
-      camera.lookAt(scene.position);
-      uniforms.u_time.value = clock.getElapsedTime();
-      uniforms.u_frequency.value = analyser.getAverageFrequency();
-
-      sphereMesh.rotation.x += 0.001;
-      sphereMesh.rotation.y += 0.001;
-
-      requestAnimationFrame(animate);
-      renderer.render(scene, camera);
-    };
     animate();
 
     // Cleanup on unmount
@@ -32,9 +19,24 @@ function Visualization() {
         mountRef.current.removeChild(renderer.domElement);
       }
     };
-  }, [camera, renderer, scene]);
+  }, [renderer, animate]);
 
-  return <div ref={mountRef}></div>;
+  return (
+    <div
+      style={{
+        width: "100%",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
+      <div ref={mountRef}></div>
+      <div className="audio-controls">
+        <button>Start/Pause</button>
+      </div>
+    </div>
+  );
 }
 
 export default Visualization;
