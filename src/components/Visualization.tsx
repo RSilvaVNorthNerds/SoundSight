@@ -16,15 +16,25 @@ function Visualization() {
       mountRef.current.appendChild(renderer.domElement);
     }
 
-    animate();
-
     // Cleanup on unmount
     return () => {
+      if (sound.isPlaying) {
+        sound.stop();
+      }
       if (mountRef.current) {
         mountRef.current.removeChild(renderer.domElement);
       }
     };
-  }, [renderer, animate, sound, controls]);
+  }, [renderer]);
+
+  useEffect(() => {
+    console.error("sound.isPlaying", sound.isPlaying);
+    if (sound.isPlaying) {
+      sound.pause();
+    }
+
+    animate();
+  }, [controls, sound]);
 
   const handleStartPause = () => {
     if (sound.isPlaying) {

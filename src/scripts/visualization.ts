@@ -68,6 +68,8 @@ function useAudioVisualizer({ color, shape, wireframe }: IUseAudioVisualizer) {
   const renderer = new THREE.WebGLRenderer();
   renderer.setSize(VISUALIZER_WIDTH, VISUALIZER_HEIGHT);
 
+  console.error("renderer");
+
   // Animation loop
   const animate = () => {
     camera.lookAt(scene.position);
