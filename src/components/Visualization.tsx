@@ -3,7 +3,7 @@ import useAudioVisualizer from "../scripts/visualization";
 
 function Visualization() {
   const mountRef = useRef<HTMLDivElement>(null);
-  const { scene, camera, renderer, uniforms, analyser, clock } =
+  const { scene, camera, renderer, uniforms, analyser, clock, sphereMesh } =
     useAudioVisualizer();
 
   useEffect(() => {
@@ -17,6 +17,10 @@ function Visualization() {
       camera.lookAt(scene.position);
       uniforms.u_time.value = clock.getElapsedTime();
       uniforms.u_frequency.value = analyser.getAverageFrequency();
+
+      sphereMesh.rotation.x += 0.001;
+      sphereMesh.rotation.y += 0.001;
+
       requestAnimationFrame(animate);
       renderer.render(scene, camera);
     };

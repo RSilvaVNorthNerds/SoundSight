@@ -17,9 +17,7 @@ function useAudioVisualizer() {
     1000
   );
 
-  camera.position.z = 5;
-  camera.position.y = 5;
-  camera.rotation.x = -Math.PI / 4;
+  camera.position.set(5, 5, 2);
 
   // add audio configuration
   const listener = new THREE.AudioListener();
@@ -28,7 +26,7 @@ function useAudioVisualizer() {
   const sound = new THREE.Audio(listener);
 
   const audioLoader = new THREE.AudioLoader();
-  audioLoader.load("edm.mp3", function (buffer) {
+  audioLoader.load("phonk.mp3", function (buffer) {
     sound.setBuffer(buffer);
     window.addEventListener("click", function () {
       sound.play();
@@ -40,14 +38,12 @@ function useAudioVisualizer() {
   const clock = new THREE.Clock();
 
   // Create a geometry
-  const geometry = new THREE.IcosahedronGeometry(3, 30);
+  const geometry = new THREE.IcosahedronGeometry(3, 25);
 
   const uniforms = {
-    u_time: { type: "f", value: 0.0 },
-    u_frequency: { type: "f", value: 0.0 },
-    u_red: { type: "f", value: 1.0 },
-    u_green: { type: "f", value: 1.0 },
-    u_blue: { type: "f", value: 1.0 },
+    u_time: { value: 0.8 },
+    u_frequency: { value: 0.003 },
+    u_color: { value: new THREE.Color(0x00008b) },
   };
 
   // Create a material
@@ -75,6 +71,7 @@ function useAudioVisualizer() {
     uniforms,
     analyser,
     clock,
+    sphereMesh,
   };
 }
 
