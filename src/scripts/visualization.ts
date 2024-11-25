@@ -1,11 +1,13 @@
 import * as THREE from "three";
+import vertexShader from "../shaders/vertex.glsl?raw";
+import fragmentShader from "../shaders/fragment.glsl?raw";
 
 function useAudioVisualizer() {
   // Create a scene
   const scene = new THREE.Scene();
 
   const VISUALIZER_WIDTH = 800;
-  const VISUALIZER_HEIGHT = 400;
+  const VISUALIZER_HEIGHT = 600;
 
   // Create a camera
   const camera = new THREE.PerspectiveCamera(
@@ -19,6 +21,24 @@ function useAudioVisualizer() {
   camera.position.y = 5;
   camera.rotation.x = -Math.PI / 4;
 
+  // add audio configuration
+  const listener = new THREE.AudioListener();
+  camera.add(listener);
+
+  const sound = new THREE.Audio(listener);
+
+  const audioLoader = new THREE.AudioLoader();
+  audioLoader.load("edm.mp3", function (buffer) {
+    sound.setBuffer(buffer);
+    window.addEventListener("click", function () {
+      sound.play();
+    });
+  });
+
+  const analyser = new THREE.AudioAnalyser(sound, 32);
+
+  const clock = new THREE.Clock();
+
   // Create a geometry
   const geometry = new THREE.IcosahedronGeometry(3, 30);
 
@@ -31,7 +51,11 @@ function useAudioVisualizer() {
   };
 
   // Create a material
-  const material = new THREE.ShaderMaterial({ uniforms });
+  const material = new THREE.ShaderMaterial({
+    uniforms,
+    vertexShader,
+    fragmentShader,
+  });
 
   // Create a mesh
   const sphereMesh = new THREE.Mesh(geometry, material);
@@ -48,6 +72,9 @@ function useAudioVisualizer() {
     renderer,
     scene,
     camera,
+    uniforms,
+    analyser,
+    clock,
   };
 }
 

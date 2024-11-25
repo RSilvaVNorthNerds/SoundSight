@@ -3,7 +3,8 @@ import useAudioVisualizer from "../scripts/visualization";
 
 function Visualization() {
   const mountRef = useRef<HTMLDivElement>(null);
-  const { scene, camera, renderer } = useAudioVisualizer();
+  const { scene, camera, renderer, uniforms, analyser, clock } =
+    useAudioVisualizer();
 
   useEffect(() => {
     // Append the renderer's DOM element to the mountRef
@@ -13,6 +14,9 @@ function Visualization() {
 
     // Animation loop
     const animate = () => {
+      camera.lookAt(scene.position);
+      uniforms.u_time.value = clock.getElapsedTime();
+      uniforms.u_frequency.value = analyser.getAverageFrequency();
       requestAnimationFrame(animate);
       renderer.render(scene, camera);
     };
