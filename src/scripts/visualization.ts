@@ -19,8 +19,8 @@ function useAudioVisualizer({
   const scene = new THREE.Scene();
   scene.background = new THREE.Color(0x242424);
 
-  const VISUALIZER_WIDTH = 800;
-  const VISUALIZER_HEIGHT = 600;
+  const VISUALIZER_WIDTH = window.innerWidth;
+  const VISUALIZER_HEIGHT = window.innerHeight;
 
   // Create a camera
   const camera = new THREE.PerspectiveCamera(
@@ -30,7 +30,11 @@ function useAudioVisualizer({
     1000
   );
 
-  camera.position.set(5, 5, 2);
+  camera.position.set(0, 0, 10);
+
+  // add ambient light
+  const light = new THREE.AmbientLight(0xffffff, 5.0);
+  scene.add(light);
 
   // add audio configuration
   const listener = new THREE.AudioListener();
@@ -66,9 +70,42 @@ function useAudioVisualizer({
   // Create a mesh
   const sphereMesh = new THREE.Mesh(geometry, material);
 
+  sphereMesh.castShadow = true;
+
   sphereMesh.material.wireframe = wireframe;
   // Add the mesh to the scene
   scene.add(sphereMesh);
+
+  const textureLoader = new THREE.TextureLoader();
+  textureLoader.load(
+    "sunset.jpg",
+    (texture) => {
+      console.log("Texture loaded successfully");
+
+      const backgroundGeometry = new THREE.PlaneGeometry(60, 40, 20);
+      const backgroundMaterial = new THREE.MeshStandardMaterial({
+        map: texture,
+        side: THREE.DoubleSide,
+      });
+
+      const backgroundMesh = new THREE.Mesh(
+        backgroundGeometry,
+        backgroundMaterial
+      );
+
+      backgroundMesh.position.set(0, 0, -10);
+      backgroundMesh.rotation.set(0, 0, 0);
+      backgroundMesh.receiveShadow = true;
+
+      scene.add(backgroundMesh);
+
+      animate();
+    },
+    undefined,
+    (error) => {
+      console.error("Error loading texture:", error);
+    }
+  );
 
   // Create a renderer
   const renderer = new THREE.WebGLRenderer();

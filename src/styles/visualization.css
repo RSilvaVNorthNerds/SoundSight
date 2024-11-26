@@ -1,0 +1,12 @@
+.control-type {
+  background-color: #181818;
+  color: #ffffff;
+  padding: 0.5rem;
+  border-radius: 10px 10px 0 0;
+  margin: 0px 4px;
+  cursor: pointer;
+}
+
+.control-type .active {
+  background-color: #141414;
+}
