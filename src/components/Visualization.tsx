@@ -8,7 +8,6 @@ function Visualization() {
     wireframe: true,
     songFile: "phonk.mp3",
   });
-  const [currentTime, setCurrentTime] = useState(0);
 
   const mountRef = useRef<HTMLDivElement>(null);
   const { animate, renderer, sound } = useAudioVisualizer(controls);
@@ -54,15 +53,6 @@ function Visualization() {
     if (file) {
       const fileUrl = URL.createObjectURL(file);
       setControls((prev) => ({ ...prev, songFile: fileUrl }));
-    }
-  };
-
-  const handleTimeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const time = parseFloat(event.target.value);
-    setCurrentTime(time);
-    if (sound.source) {
-      sound.source.stop();
-      sound.source.start(time);
     }
   };
 
@@ -115,17 +105,6 @@ function Visualization() {
           accept=".mp3"
         />
 
-        {/* {songLength && (
-          <input
-            type="range"
-            name="playback"
-            id="playback"
-            min="0"
-            max={songLength}
-            value={currentTime}
-            onChange={handleTimeChange}
-          />
-        )} */}
         <button
           style={{ backgroundColor: "#000000" }}
           onClick={handleStartPause}
