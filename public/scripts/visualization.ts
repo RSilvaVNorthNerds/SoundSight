@@ -1,6 +1,6 @@
 import * as THREE from "three";
-import vertexShader from "../shaders/vertex.glsl?raw";
-import fragmentShader from "../shaders/fragment.glsl?raw";
+import vertexShader from "../../src/shaders/vertex.glsl?raw";
+import fragmentShader from "../../src/shaders/fragment.glsl?raw";
 
 interface IUseAudioVisualizer {
   color: number;

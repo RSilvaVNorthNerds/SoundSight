@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import useAudioVisualizer from "../scripts/visualization";
-import "../styles/Visualization.css";
+import useAudioVisualizer from "../../public/scripts/visualization";
+import "../../public/styles/visualization.css";
 import FilterControls from "./FilterControls";
 
 function Visualization() {
