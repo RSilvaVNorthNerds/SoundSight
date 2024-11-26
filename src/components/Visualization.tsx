@@ -6,7 +6,10 @@ function Visualization() {
     color: 0x00008b,
     shape: "Icosahedron",
     wireframe: true,
+    songFile: "phonk.mp3",
   });
+  const [currentTime, setCurrentTime] = useState(0);
+
   const mountRef = useRef<HTMLDivElement>(null);
   const { animate, renderer, sound } = useAudioVisualizer(controls);
 
@@ -15,6 +18,8 @@ function Visualization() {
     if (mountRef.current) {
       mountRef.current.appendChild(renderer.domElement);
     }
+
+    animate();
 
     // Cleanup on unmount
     return () => {
@@ -25,16 +30,7 @@ function Visualization() {
         mountRef.current.removeChild(renderer.domElement);
       }
     };
-  }, [renderer]);
-
-  useEffect(() => {
-    console.error("sound.isPlaying", sound.isPlaying);
-    if (sound.isPlaying) {
-      sound.pause();
-    }
-
-    animate();
-  }, [controls, sound]);
+  }, [renderer, sound, animate]);
 
   const handleStartPause = () => {
     if (sound.isPlaying) {
@@ -49,6 +45,27 @@ function Visualization() {
     setControls((prev) => ({ ...prev, color: intColor }));
   };
 
+  const handleShapeChange = (shape: string) => {
+    setControls((prev) => ({ ...prev, shape }));
+  };
+
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const fileUrl = URL.createObjectURL(file);
+      setControls((prev) => ({ ...prev, songFile: fileUrl }));
+    }
+  };
+
+  const handleTimeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const time = parseFloat(event.target.value);
+    setCurrentTime(time);
+    if (sound.source) {
+      sound.source.stop();
+      sound.source.start(time);
+    }
+  };
+
   return (
     <div
       style={{
@@ -60,9 +77,17 @@ function Visualization() {
       }}
     >
       <div ref={mountRef}></div>
-      <div className="audio-controls">
+      <div
+        className="audio-controls"
+        style={{
+          backgroundColor: "#181818",
+          padding: "1rem",
+          borderRadius: "10px",
+        }}
+      >
         <label htmlFor="color">Color: </label>
         <select
+          name="color"
           onChange={(event) => {
             handleColorChange(event.target.value);
           }}
@@ -71,7 +96,42 @@ function Visualization() {
           <option value="0x8b0000">Red</option>
           <option value="0x008b00">Green</option>
         </select>
-        <button onClick={handleStartPause}>Start/Pause</button>
+        <label htmlFor="shape">Shape: </label>
+        <select
+          name="shape"
+          onChange={(event) => {
+            handleShapeChange(event.target.value);
+          }}
+        >
+          <option value="Icosahedron">Icosahedron</option>
+          <option value="Sphere">Sphere</option>
+          <option value="Cube">Cube</option>
+        </select>
+        <input
+          type="file"
+          name="file-upload"
+          id="file-uploader"
+          onChange={handleFileUpload}
+          accept=".mp3"
+        />
+
+        {/* {songLength && (
+          <input
+            type="range"
+            name="playback"
+            id="playback"
+            min="0"
+            max={songLength}
+            value={currentTime}
+            onChange={handleTimeChange}
+          />
+        )} */}
+        <button
+          style={{ backgroundColor: "#000000" }}
+          onClick={handleStartPause}
+        >
+          Start/Pause
+        </button>
       </div>
     </div>
   );

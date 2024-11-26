@@ -6,9 +6,15 @@ interface IUseAudioVisualizer {
   color: number;
   shape: string;
   wireframe: boolean;
+  songFile: string;
 }
 
-function useAudioVisualizer({ color, shape, wireframe }: IUseAudioVisualizer) {
+function useAudioVisualizer({
+  color,
+  shape,
+  wireframe,
+  songFile,
+}: IUseAudioVisualizer) {
   // Create a scene
   const scene = new THREE.Scene();
   scene.background = new THREE.Color(0x242424);
@@ -33,7 +39,7 @@ function useAudioVisualizer({ color, shape, wireframe }: IUseAudioVisualizer) {
   const sound = new THREE.Audio(listener);
 
   const audioLoader = new THREE.AudioLoader();
-  audioLoader.load("phonk.mp3", function (buffer) {
+  audioLoader.load(songFile, function (buffer) {
     sound.setBuffer(buffer);
   });
 
@@ -68,13 +74,18 @@ function useAudioVisualizer({ color, shape, wireframe }: IUseAudioVisualizer) {
   const renderer = new THREE.WebGLRenderer();
   renderer.setSize(VISUALIZER_WIDTH, VISUALIZER_HEIGHT);
 
-  console.error("renderer");
-
   // Animation loop
   const animate = () => {
     camera.lookAt(scene.position);
     uniforms.u_time.value = clock.getElapsedTime();
-    uniforms.u_frequency.value = analyser.getAverageFrequency();
+
+    let frequency = analyser.getAverageFrequency();
+
+    // Apply a scaling function to emphasize higher frequencies
+    frequency = Math.pow(frequency, 1.4);
+
+    // Update the uniform with the scaled frequency
+    uniforms.u_frequency.value = frequency;
 
     sphereMesh.rotation.x += 0.001;
     sphereMesh.rotation.y += 0.001;
@@ -96,6 +107,8 @@ function getShape(name: string) {
       return new THREE.IcosahedronGeometry(3, 25);
     case "Sphere":
       return new THREE.SphereGeometry(3, 25);
+    case "Cube":
+      return new THREE.BoxGeometry(3, 3, 3, 25, 25, 25);
   }
 }
 
