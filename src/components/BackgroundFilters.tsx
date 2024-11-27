@@ -5,9 +5,10 @@ export interface IBackgroundFiltersProps {
 function BackgroundFilters({ handleFileUpload }: IBackgroundFiltersProps) {
   return (
     <>
+      <label htmlFor="bg-file-upload">Change Background Image: </label>
       <input
         type="file"
-        name="file-upload"
+        name="bg-file-upload"
         id="file-uploader"
         onChange={handleFileUpload}
         accept=".mp3"

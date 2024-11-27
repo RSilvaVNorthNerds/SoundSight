@@ -59,15 +59,7 @@ function Visualization() {
   };
 
   return (
-    <div
-      style={{
-        width: "100%",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
+    <div className="visualization-controls-wrapper">
       <div ref={mountRef}></div>
       <FilterControls
         handleColorChange={handleColorChange}

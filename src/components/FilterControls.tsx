@@ -23,28 +23,9 @@ function FilterControls({
   };
   return (
     <>
-      <div
-        className="audio-controls"
-        style={{
-          backgroundColor: "#181818",
-          padding: "1rem",
-          borderRadius: "10px",
-          position: "fixed",
-          bottom: "1rem",
-          display: "flex",
-        }}
-      >
-        <div
-          style={{ width: "100%", height: "100%", position: "relative" }}
-          className="control-container"
-        >
-          <div
-            style={{
-              position: "absolute",
-              transform: "translateY(calc(-100% - 16px))",
-            }}
-            className="control-types"
-          >
+      <div className="audio-controls">
+        <div className="control-container">
+          <div className="control-types">
             <span
               onClick={() => handleFilterTypeChange("music")}
               className={`material-symbols-outlined control-type ${
@@ -76,23 +57,20 @@ function FilterControls({
           </div>
         </div>
 
-        <button
-          style={{
-            backgroundColor: "#000000",
-            display: "flex",
-            placeContent: "center",
-            height: "auto",
-          }}
-          onClick={handleStartPause}
-          type="button"
-        >
-          <span
-            style={{ fontSize: "3rem" }}
-            className="material-symbols-outlined"
+        <div className="pp-button-wrapper">
+          <button
+            className="play-pause-button"
+            onClick={handleStartPause}
+            type="button"
           >
-            play_pause
-          </span>
-        </button>
+            <span
+              style={{ fontSize: "3rem" }}
+              className="material-symbols-outlined"
+            >
+              play_pause
+            </span>
+          </button>
+        </div>
       </div>
     </>
   );
