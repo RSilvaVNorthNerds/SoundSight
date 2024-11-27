@@ -34,14 +34,15 @@ function FilterControls({
             >
               music_note
             </span>
-            <span
+            {/* TODO: Enable when BG Customization feature is active */}
+            {/* <span
               onClick={() => handleFilterTypeChange("bg")}
               className={`material-symbols-outlined control-type ${
-                filterState == "music" ? "active" : ""
+                filterState == "bg" ? "active" : ""
               }`}
             >
               wallpaper
-            </span>
+            </span> */}
           </div>
           <div className="controls">
             {filterState == "music" && (
